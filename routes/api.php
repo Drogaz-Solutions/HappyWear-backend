@@ -20,4 +20,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], f
     Route::post('/login', 'AuthController@login')->name('api.login');
     Route::post('/autologin', 'AuthController@autologin')->name('api.autologin');
 
+    Route::post('/sell', 'ProductController@sell')->name('api.sell');
+
 });
