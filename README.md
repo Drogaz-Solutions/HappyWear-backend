@@ -17,8 +17,6 @@
 
 ## About The Project
 
-![Screen Shot](images/screenshot.png)
-
 Happy Wear is an innovative clothing app designed to help users find their perfect outfit with a user-friendly input system that resembles the popular dating app, Tinder. The app allows users to browse through a vast collection of clothing items and select those that best match their style and preferences.
 
 The user input system of Happy Wear is simple and intuitive, allowing users to swipe right on clothes they like and swipe left on those they don't. This input method makes it easy for users to quickly filter through items and find the ones that resonate with their sense of style.
