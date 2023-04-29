@@ -40,9 +40,3 @@ Happy Wear is a modern clothing app that is built using Laravel.
 ## Authors
 
 * **Drogaz Development** - *Backend Software Developer* - [Drogaz Development](https://github.com/DrogazDev/) - *Everything*
-
-## Acknowledgements
-
-* []()
-* []()
-* []()
