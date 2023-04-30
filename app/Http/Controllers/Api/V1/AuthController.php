@@ -24,15 +24,16 @@ class AuthController extends Controller
              'email' => 'required|email|unique:users,email',
              'password' => 'required',
              'repeat_password' => 'required|same:password',
+             'state' => 'required',
              'city' => 'required',
              'country' => 'required',
-             'postal_code' => 'required',
+             'zipcode' => 'required',
              'street' => 'required',
              'house_number' => 'required',
              'accept_terms' => 'required',
         );
 
-        if($request->atoken != 'NVQBlcbPpGQb2JF90EX1SiUZz0M0kADwxaabguo3zxsOwlaFWfmswdjx9DSejvB8BWPDCbAdV2beAbTaJPgUNCEXcXGPJ1dmMrZ1RJfZ333hnMyO16mb5celcOuqr2PqmGwq8mxd6y92o9QJbHfwS53Iec32tLNZ9hxKQ==') {
+        if($request->atoken != env('ATOKEN')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Authorization token is invalid',
@@ -100,7 +101,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('Password Grant Client');
+        $token = $user->createToken('HappyWear Grant');
 
         return response()->json([
             'success' => true,
@@ -116,7 +117,6 @@ class AuthController extends Controller
 
     public function autologin(Request $request) {
 
-        // check with passport if bearer token is valid
         $user = Auth::user();
 
         if(!$user) {

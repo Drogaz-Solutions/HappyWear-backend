@@ -14,5 +14,24 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('test');
+});
+
+// Route::get('/legal', function () {
+//     return view('legal.tos');
+// });
+
+Route::group(['prefix' => 'legal'], function () {
+    Route::get('/terms-of-service', function () {
+        return view('legal.tos');
+    });
+    Route::get('/privacy-policy', function () {
+        return view('legal.pp');
+    });
+    Route::get('/refund-policy', function () {
+        return view('legal.refund');
+    });
+    Route::get('/', function () {
+        return view('legal.home');
+    });
 });
