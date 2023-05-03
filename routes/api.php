@@ -20,10 +20,14 @@ Route::group(['namespace' => 'App\Http\Controllers\Api\V1', 'prefix' => 'v1'], f
     Route::post('/login', 'AuthController@login')->name('api.login');
     Route::post('/autologin', 'AuthController@autologin')->name('api.autologin');
 
-    Route::post('/like', 'LikeController@like')->name('api.like');
+    Route::post('/action', 'LikeController@action')->name('api.like');
     Route::get('/getLiked', 'LikeController@getLiked')->name('api.getLiked');
 
     Route::get('/showProducts', 'SwipeController@showProducts')->name('api.showProducts');
+    Route::get('/productDetails', 'SwipeController@productDetails')->name('api.productDetails');
+
+    Route::get('/getTranslation', 'LanguageController@getTranslation')->name('api.getTranslation');
+    Route::get('/getFilters', 'GetController@getFilters')->name('api.getFilters');
 
 
     Route::post('/sell', 'ProductController@sell')->name('api.sell');

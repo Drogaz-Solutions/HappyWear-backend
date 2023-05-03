@@ -33,5 +33,36 @@
       "country": "Country"
     },
     "termsAndConditions": "I agree to the Terms and Conditions"
+  },
+  "tags": {
+    "cheap": "Cheap",
+    "durable": "Durable",
+    "hot_item": "Hot Item",
+    "popular": "Popular"
+  },
+  "filters": {
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "unisex": "Unisex"
+    },
+    "brand": "Brand",
+    "price": "Price",
+    "color": "Color",
+    "size": "Size",
+    "material": "Material",
+    "shirt": "Shirt",
+    "jacket": "Jacket",
+    "sweater": "Sweater",
+    "pants": "Pants",
+    "shorts": "Shorts",
+    "shoes": "Shoes",
+    "accessories": "Accessories" 
+  },
+  "settings": {
+    "change_data": "Change Data",
+    "change_password": "Change Password",
+    "my_orders": "My Orders",
+    "logout": "Logout"
   }
 }

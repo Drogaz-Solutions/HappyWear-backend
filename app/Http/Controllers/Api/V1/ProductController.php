@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -11,6 +12,17 @@ use Illuminate\Support\Facades\Validator;
 class ProductController extends Controller
 {
     public function sell(Request $request) {
+
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
+        }
+
+        $user = User::find($user->id);
 
         $rules = array(
         
@@ -27,17 +39,8 @@ class ProductController extends Controller
         'condition' => 'required',
         'brand' => 'required',
         'sex' => 'required',
-        'bought_at' => 'required',
+        // 'bought_at' => 'required',
         );
-
-        $user = Auth::guard('api')->user();
-
-        if (!$user) {
-            return response()->json([
-            'success' => false,
-            'message' => 'User not found',
-            ], 404);
-        }
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -46,7 +49,7 @@ class ProductController extends Controller
             'success' => false,
             'message' => 'Validation failed',
             'errors' => $validator->errors(),
-            ], 400);
+            ], 200);
         }
 
         $product = new Product();
@@ -64,7 +67,6 @@ class ProductController extends Controller
         $product->condition = $request->condition;
         $product->brand = $request->brand;
         $product->sex = $request->sex;
-        $product->bought_at = $request->bought_at;
         $product->save();
 
         return response()->json([

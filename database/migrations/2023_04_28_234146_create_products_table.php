@@ -33,7 +33,9 @@ return new class extends Migration
             $table->string("condition");
             $table->string("brand");
             $table->string('sex');
-            $table->string("bought_at");
+            // $table->string("bought_at");
+
+            $table->boolean("available")->default(true);
 
             $table->timestamps();
         });

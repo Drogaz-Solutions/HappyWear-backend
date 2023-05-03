@@ -43,7 +43,11 @@ class User extends Authenticatable
     ];
 
     public function likedProducts() {
-        return $this->belongsToMany(Product::class)->withTimestamps();
+        return $this->belongsToMany(Product::class, 'user_likes')->withTimestamps();
+    }
+
+    public function dislikedProducts() {
+        return $this->belongsToMany(Product::class, 'user_dislikes')->withTimestamps();
     }
 
 // Product model

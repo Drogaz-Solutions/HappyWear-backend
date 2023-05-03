@@ -8,76 +8,163 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SwipeController extends Controller
 {
-    public function showProducts(Request $request) {
+    public function showProducts(Request $request)
+    {
 
         $user = Auth::user();
 
-        $liked_products = $user->likedProducts()->get();
-        
-        $list = [];
-
-        // NOTE: Old algorithm
-        // foreach ($liked_products as $product) {
-        //     $similar_brands = Product::where('brand', $product->brand)
-        //     ->where('id', '!=', $product->id)
-        //     ->get();
-
-        //     array_push($list, $similar_brands);
-
-        //     $similar_kinds = Product::where('kind', $product->kind)
-        //     ->where('id', '!=', $product->id)
-        //     ->get();
-
-        //     array_push($list, $similar_kinds);
-        // }
-
-        // NOTE: New algorithm
-        // foreach ($liked_products as $product) {
-        //     $products = Product::where('brand', $product->brand)
-        //     ->orWhere('kind', $product->kind)
-        //     ->get();
-
-        //     array_push($list, $products);
-        // }
-    
-        // get products with same brand or kind as liked products and exclude liked products
-        foreach ($liked_products as $product) {
-            $products = Product::where('brand', $product->brand)
-            // ->orWhere('kind', $product->kind)
-            ->whereNotIn('id', $liked_products->pluck('id'))
-            ->get();
-
-            array_push($list, $products);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
         }
 
-        // // insert some random products to random places in the list
-        // $random_products = Product::inRandomOrder()->limit(10)->get();
-        // $random_products = $random_products->toArray();
-        // $random_products = array_chunk($random_products, 1);
+        $user = User::find($user->id);
 
-        // $random_products = array_map(function($item) {
-        //     return $item[0];
-        // }, $random_products);
+        $liked_products = $user->likedProducts()->get();
 
-        // // merge random products with the list
-        // $list = array_merge($list, $random_products);
+        if (!$liked_products->count()) {
+            $liked_products = Product::all();
+
+            $liked_products = $liked_products->shuffle();
+
+            if ($request->limit) {
+                $liked_products = $liked_products->slice(0, $request->limit);
+            }
+
+            $liked_products = $liked_products->unique('id');
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Products',
+                'data' => $liked_products,
+            ], 200);
+        }
+
+        $list = [];
+
+        if ($request->filters) {
+            $filters = json_decode($request->filters);
+
+            $products = Product::whereNotIn('id', $liked_products->pluck('id'))
+                ->whereNotIn('id', $user->dislikedProducts()->get()->pluck('id'))
+                ->whereNotIn('available', [0]);
+
+            foreach ($filters as $column => $values) {
+                if (is_array($values)) {
+                    $products->where(function ($query) use ($column, $values) {
+                        foreach ($values as $value) {
+                            $query->orWhere($column, $value);
+                        }
+                    });
+                } else {
+                    $products->where($column, $values);
+                }
+            }
+
+            $result = $products->get();
+
+            // limit
+            if ($request->limit) {
+                $result = $result->slice(0, $request->limit);
+            }
+
+            // unique
+            $result = $result->unique('id');
+
+            // shuffle
+            $result = $result->shuffle();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Products',
+                'data' => $result,
+            ], 200);
+
+            // $list = array_filter($list, function ($item) use ($liked_products) {
+            //     return !in_array($item['id'], $liked_products->pluck('id')->toArray());
+            // });
+
+            // if ($request->limit) {
+            //     $list = array_slice($list, 0, $request->limit);
+            // }
+
+            // shuffle($list);
+
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Products',
+            //     'data' => $list,
+            // ], 200);
+        }
+
+        foreach ($liked_products as $product) {
+            $products = Product::where('brand', $product->brand)
+                ->orWhere('kind', $product->kind)
+                ->whereNotIn('id', $liked_products->pluck('id'))
+                ->whereNotIn('id', $user->dislikedProducts()->get()->pluck('id'))
+                ->whereNotIn('available', [0])
+                ->get();
+
+            $list = array_merge($list, $products->toArray());
+        }
+
+        $list = array_unique($list, SORT_REGULAR);
+
+        $list = array_filter($list, function ($item) use ($liked_products) {
+            return !in_array($item['id'], $liked_products->pluck('id')->toArray());
+        });
+
+        if ($request->limit) {
+            $list = array_slice($list, 0, $request->limit);
+        }
+
+        shuffle($list);
 
         return response()->json([
             'success' => true,
             'message' => 'Products',
             'data' => $list,
         ], 200);
+    }
 
+    public function productDetails(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
+        }
+
+        $rules = array(
+            'product_id' => 'required',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 200);
+        }
+
+        $product = Product::find($request->product_id);
 
         return response()->json([
             'success' => true,
-            'message' => 'Products',
-            'data' => $liked_products,
+            'message' => 'Product details',
+            'data' => $product,
         ], 200);
-
-
     }
 }

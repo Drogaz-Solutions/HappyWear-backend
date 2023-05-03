@@ -37,7 +37,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Authorization token is invalid',
-            ], 400);
+            ], 200);
         }
 
         $validator = Validator::make($request->all(), $rules);
@@ -47,7 +47,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
-            ], 400);
+            ], 200);
         }
 
         $user = new User();
@@ -82,7 +82,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
-            ], 400);
+            ], 200);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -91,14 +91,14 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'User not found',
-            ], 404);
+            ], 200);
         }
 
         if(!password_verify($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Password is incorrect',
-            ], 401);
+            ], 200);
         }
 
         $token = $user->createToken('HappyWear Grant');
@@ -123,7 +123,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'User not found',
-            ], 404);
+            ], 200);
         }
 
         return response()->json([

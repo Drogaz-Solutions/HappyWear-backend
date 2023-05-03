@@ -1,0 +1,67 @@
+{
+    "login": {
+        "title": "Aanmelden",
+        "username": "Gebruikersnaam",
+        "password": "Wachtwoord",
+        "rememberMe": "Onthoud mij",
+        "forgotPassword": "Wachtwoord vergeten?",
+        "loginButton": "Aanmelden",
+        "signupLink": "Heb je nog geen account? Meld je nu aan!"
+    },
+    "register": {
+        "title": "Inschrijven",
+        "signupButton": "Inschrijven",
+        "loginLink": "Heb je al een account? Log nu in!",
+        "credentials": {
+            "email": "E-mail",
+            "password": "Wachtwoord",
+            "confirmPassword": "Bevestig wachtwoord",
+            "firstName": "Voornaam",
+            "lastName": "Achternaam",
+            "initals": "Initialen",
+            "gender": {
+                "male": "Mannelijk",
+                "female": "Vrouwelijk",
+                "other": "Ander"
+            },
+            "dateOfBirth": "Geboortedatum",
+            "street": "Straat",
+            "houseNumber": "Huisnummer",
+            "postalCode": "Postcode",
+            "city": "Stad",
+            "country": "Land"
+        },
+        "termsAndConditions": "Ik ga akkoord met de Algemene Voorwaarden"
+    },
+    "tags": {
+        "cheap": "Goedkoop",
+        "durable": "Duurzaam",
+        "hot_item": "Hot Item",
+        "popular": "Populair"
+    },
+    "filters": {
+        "gender": {
+            "male": "Mannelijk",
+            "female": "Vrouwelijk",
+            "unisex": "Unisex"
+        },
+        "brand": "Merk",
+        "price": "Prijs",
+        "color": "Kleur",
+        "size": "Grootte",
+        "material": "Materiaal",
+        "shirt": "Overhemd",
+        "jacket": "Jasje",
+        "sweater": "Trui",
+        "pants": "Broek",
+        "shorts": "Korte broek",
+        "shoes": "Schoenen",
+        "accessories": "Accessoires"
+    },
+    "settings": {
+        "change_data": "Gegevens wijzigen",
+        "change_password": "Wachtwoord wijzigen",
+        "my_orders": "Mijn bestellingen",
+        "logout": "Uitloggen"
+    }
+}

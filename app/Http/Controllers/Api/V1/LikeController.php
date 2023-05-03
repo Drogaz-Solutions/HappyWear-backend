@@ -4,45 +4,76 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class LikeController extends Controller
 {
-    public function like(Request $request) {
+    public function action(Request $request)
+    {
 
-        $rules = array(
-            'product_id' => 'required',
-        );
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
+        }
+
+        $user = User::find($user->id);
+
+        $rules = [
+            'product_id' => 'required|integer|exists:products,id',
+            'action' => 'required|in:like,dislike',
+        ];
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation failed',
+                'message' => 'Validation error',
                 'errors' => $validator->errors(),
-            ], 400);
+            ], 200);
         }
 
-        $productId = $request->product_id;
+        $product = Product::find($request->product_id);
 
-        $user = Auth::user();
-        $product = Product::find($productId);
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+            ], 200);
+        }
 
-        $user->likedProducts()->attach($product->id);
+        if ($request->action == 'like') {
+            $user->likedProducts()->attach($product->id);
+        } else {
+            $user->dislikedProducts()->attach($product->id);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Product liked',
+            'message' => 'Product ' . $request->action . 'd',
         ], 200);
-
+        
     }
 
-    public function getLiked(Request $request) {
-
+    public function getLiked(Request $request)
+    {
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
+        }
+
+        $user = User::find($user->id);
 
         $likedProducts = $user->likedProducts()->get();
 
@@ -51,10 +82,10 @@ class LikeController extends Controller
             'message' => 'Liked products',
             'data' => $likedProducts,
         ], 200);
-
     }
 
-    public function productLikes(Request $request) {
+    public function productLikes(Request $request)
+    {
 
         $product = Product::find($request->product_id);
         $likers = $product->likers()->get();
@@ -64,6 +95,5 @@ class LikeController extends Controller
             'message' => 'Product likes',
             'data' => $likers,
         ], 200);
-
     }
 }
